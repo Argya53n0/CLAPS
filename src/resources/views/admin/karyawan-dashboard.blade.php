@@ -69,6 +69,12 @@
                              <div>
                                  <div class="font-bold text-gray-900 mb-1">{{ $order->order_code }}</div>
                                  <div class="text-[13px] text-gray-600">{{ $order->items->count() }} item • {{ $order->user->name ?? 'Customer' }}</div>
+                                 @if($order->delivery_lat && $order->delivery_lng)
+                                    <a href="https://www.google.com/maps?q={{ $order->delivery_lat }},{{ $order->delivery_lng }}" target="_blank" class="inline-flex mt-2 items-center gap-1.5 px-3 py-1.5 bg-[#F5E6D8] text-[#8C4A15] hover:bg-[#EBE1D7] rounded-lg text-[11px] font-bold transition-colors">
+                                        <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                        Buka Rute Pengiriman
+                                    </a>
+                                 @endif
                              </div>
                              @php
                                 $statusStyles = [

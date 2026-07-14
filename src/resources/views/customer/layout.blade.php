@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('styles')
 </head>
 <body class="antialiased min-h-screen bg-[#FCF8F2] font-sans text-gray-800 flex flex-col">
 
@@ -93,5 +94,6 @@
         </div>
     </footer>
 
+    @stack('scripts')
 </body>
 </html>

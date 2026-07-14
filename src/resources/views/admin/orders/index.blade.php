@@ -89,13 +89,19 @@
                                             echo strtoupper(substr($initials, 0, 2));
                                         @endphp
                                     </div>
-                                    <div>
+                                        <div>
                                         <div class="font-bold text-gray-900 leading-tight">
                                             @php
                                                 $parts = explode(' ', $order->user->name);
                                                 echo count($parts) > 1 ? $parts[0] . '<br>' . implode(' ', array_slice($parts, 1)) : $parts[0];
                                             @endphp
                                         </div>
+                                        @if($order->delivery_lat && $order->delivery_lng)
+                                            <a href="https://www.google.com/maps?q={{ $order->delivery_lat }},{{ $order->delivery_lng }}" target="_blank" class="text-[11px] text-[#8C4A15] hover:underline flex items-center gap-1 mt-1 font-semibold">
+                                                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                                                Lihat Rute
+                                            </a>
+                                        @endif
                                     </div>
                                 </div>
                             </td>

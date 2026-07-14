@@ -1,9 +1,9 @@
-@extends('customer.layout')
+@extends('customer.account-layout')
 
-@section('title', 'My Orders - Claps Coffee')
+@section('title', 'Riwayat Pesanan - Claps Coffee')
 
-@section('content')
-    <div class="max-w-4xl mx-auto px-6 lg:px-12 py-12">
+@section('account_content')
+    <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#EBE1D7]">
         <h1 class="text-3xl font-extrabold font-serif text-gray-900 tracking-tight mb-8">My Orders</h1>
 
         @if($orders->count() > 0)

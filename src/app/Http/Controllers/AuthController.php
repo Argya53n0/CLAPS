@@ -29,7 +29,7 @@ class AuthController extends Controller
             } elseif ($role === 'karyawan') {
                 $redirect = '/admin/orders';
             } else {
-                $redirect = '/profile';
+                $redirect = '/';
             }
             return redirect()->intended($redirect);
         }
@@ -63,7 +63,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/profile');
+        return redirect('/');
     }
 
     /**

@@ -12,80 +12,113 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cart = session('cart', []);
+        $cart = session()->get('cart', []);
         $cartItems = [];
         $total = 0;
 
-        foreach ($cart as $productId => $item) {
-            $product = Product::find($productId);
-            if ($product) {
-                $subtotal = $product->price * $item['quantity'];
-                $cartItems[] = [
-                    'product' => $product,
-                    'quantity' => $item['quantity'],
-                    'subtotal' => $subtotal,
-                ];
-                $total += $subtotal;
-            }
+        foreach ($cart as $cartItemId => $item) {
+            $cartItems[] = $item;
+            $total += $item['subtotal'];
         }
 
-        return view('customer.cart', compact('cartItems', 'total'));
+        $addresses = auth()->user()->addresses;
+
+        return view('customer.cart', compact('cartItems', 'total', 'addresses'));
     }
 
-    public function add(Product $product)
+    public function add(Request $request, Product $product)
     {
-        if (!$product->is_available) {
-            return back()->with('error', 'Produk ini sedang tidak tersedia.');
+        $cart = session()->get('cart', []);
+        
+        // Collect options
+        $options = $request->input('options', []);
+        $price = $product->price;
+        
+        // Calculate extra charges
+        if (isset($options['extra_shot']) && $options['extra_shot'] === 'Yes') {
+            $price += 5000;
         }
 
-        $cart = session('cart', []);
+        // Generate unique cart item ID based on product ID and options
+        $cartItemId = $product->id . '_' . md5(json_encode($options));
 
-        if (isset($cart[$product->id])) {
-            $cart[$product->id]['quantity']++;
+        if (isset($cart[$cartItemId])) {
+            $cart[$cartItemId]['quantity']++;
+            $cart[$cartItemId]['subtotal'] = $cart[$cartItemId]['quantity'] * $cart[$cartItemId]['price'];
         } else {
-            $cart[$product->id] = ['quantity' => 1];
+            $cart[$cartItemId] = [
+                'product' => $product,
+                'quantity' => 1,
+                'price' => $price,
+                'subtotal' => $price,
+                'options' => $options,
+                'cart_item_id' => $cartItemId,
+            ];
         }
 
-        session(['cart' => $cart]);
+        session()->put('cart', $cart);
 
-        return back()->with('success', $product->name . ' ditambahkan ke keranjang!');
+        return back()->with('success', 'Produk ditambahkan ke keranjang!');
     }
 
     public function update(Request $request)
     {
-        $cart = session('cart', []);
+        if ($request->quantities) {
+            $cart = session()->get('cart');
 
-        foreach ($request->quantities as $productId => $quantity) {
-            if ($quantity <= 0) {
-                unset($cart[$productId]);
-            } else {
-                $cart[$productId]['quantity'] = (int)$quantity;
+            foreach ($request->quantities as $cartItemId => $quantity) {
+                if (isset($cart[$cartItemId]) && $quantity > 0) {
+                    $cart[$cartItemId]['quantity'] = $quantity;
+                    $cart[$cartItemId]['subtotal'] = $cart[$cartItemId]['price'] * $quantity;
+                }
             }
-        }
 
-        session(['cart' => $cart]);
+            session()->put('cart', $cart);
+        }
 
         return back()->with('success', 'Keranjang diperbarui!');
     }
 
-    public function remove(Product $product)
+    public function remove($cartItemId)
     {
-        $cart = session('cart', []);
-        unset($cart[$product->id]);
-        session(['cart' => $cart]);
+        $cart = session()->get('cart');
 
-        return back()->with('success', $product->name . ' dihapus dari keranjang.');
+        if (isset($cart[$cartItemId])) {
+            unset($cart[$cartItemId]);
+            session()->put('cart', $cart);
+        }
+
+        return back()->with('success', 'Produk dihapus dari keranjang!');
     }
 
     public function checkout(Request $request)
     {
+        $request->validate([
+            'delivery_address' => 'nullable|string|max:500',
+            'delivery_lat' => 'required|numeric',
+            'delivery_lng' => 'required|numeric',
+            'payment_method' => 'required|in:qris,cod',
+        ]);
+
         $cart = session('cart', []);
 
         if (empty($cart)) {
             return back()->with('error', 'Keranjang kosong!');
         }
 
+        // If delivery_address is empty, try to get it from hidden fields (address book)
+        $deliveryAddress = $request->delivery_address;
+        if (empty($deliveryAddress)) {
+            // Find matching address from user's address book by coordinates
+            $address = auth()->user()->addresses()
+                ->where('lat', $request->delivery_lat)
+                ->where('lng', $request->delivery_lng)
+                ->first();
+            $deliveryAddress = $address ? $address->full_address : 'Alamat dari peta';
+        }
+
         $total = 0;
+        $shippingFee = 10000; // Flat fee
 
         // Create the order
         $order = Order::create([
@@ -93,19 +126,25 @@ class CartController extends Controller
             'user_id' => auth()->id(),
             'status' => 'pending',
             'total_price' => 0,
+            'shipping_fee' => $shippingFee,
             'notes' => $request->notes,
+            'delivery_address' => $deliveryAddress,
+            'delivery_lat' => $request->delivery_lat,
+            'delivery_lng' => $request->delivery_lng,
+            'payment_method' => $request->payment_method,
+            'payment_status' => 'unpaid',
         ]);
 
-        foreach ($cart as $productId => $item) {
-            $product = Product::find($productId);
+        foreach ($cart as $cartItemId => $item) {
+            $product = $item['product'];
             if ($product && $product->is_available) {
-                OrderItem::create([
-                    'order_id' => $order->id,
+                $order->items()->create([
                     'product_id' => $product->id,
                     'quantity' => $item['quantity'],
-                    'price' => $product->price,
+                    'price' => $item['price'],
+                    'options' => $item['options'] ?? null,
                 ]);
-                $total += ($product->price * $item['quantity']);
+                $total += $item['subtotal'];
             }
         }
 
