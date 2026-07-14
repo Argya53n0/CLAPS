@@ -15,11 +15,30 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // Owner
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Owner Claps',
+            'email' => 'owner@clapscoffee.com',
+            'password' => 'password123',
+            'role' => 'owner',
         ]);
+
+        // Karyawan
+        User::factory()->create([
+            'name' => 'Karyawan Claps',
+            'email' => 'karyawan@clapscoffee.com',
+            'password' => 'password123',
+            'role' => 'karyawan',
+        ]);
+
+        // Customer
+        User::factory()->create([
+            'name' => 'Coffee Lover',
+            'email' => 'customer@clapscoffee.com',
+            'password' => 'password123',
+            'role' => 'customer',
+        ]);
+
+        $this->call(DummyDataSeeder::class);
     }
 }
