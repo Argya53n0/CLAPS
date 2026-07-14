@@ -6,6 +6,7 @@ use App\Http\Controllers\Customer\MenuCatalogController;
 use App\Http\Controllers\Customer\CartController;
 use App\Http\Controllers\Customer\OrderHistoryController;
 use App\Http\Controllers\Customer\ProfileController;
+use App\Http\Controllers\Customer\AddressController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminMenuController;
@@ -48,14 +49,25 @@ Route::middleware('auth')->group(function () {
         Route::get('/cart', [CartController::class, 'index'])->name('cart');
         Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
         Route::patch('/cart/update', [CartController::class, 'update'])->name('cart.update');
-        Route::delete('/cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
+        Route::delete('/cart/remove/{cartItemId}', [CartController::class, 'remove'])->name('cart.remove');
         Route::post('/cart/checkout', [CartController::class, 'checkout'])->name('checkout');
 
         Route::get('/orders', [OrderHistoryController::class, 'index'])->name('orders');
         Route::get('/orders/{order}', [OrderHistoryController::class, 'show'])->name('orders.show');
+        Route::post('/orders/{order}/rate', [OrderHistoryController::class, 'rate'])->name('orders.rate');
+        Route::post('/orders/{order}/simulate-payment', [OrderHistoryController::class, 'simulatePayment'])->name('orders.simulate_payment');
 
         Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+        // Address Book
+        Route::get('/addresses', [AddressController::class, 'index'])->name('addresses.index');
+        Route::get('/addresses/create', [AddressController::class, 'create'])->name('addresses.create');
+        Route::post('/addresses', [AddressController::class, 'store'])->name('addresses.store');
+        Route::get('/addresses/{address}/edit', [AddressController::class, 'edit'])->name('addresses.edit');
+        Route::put('/addresses/{address}', [AddressController::class, 'update'])->name('addresses.update');
+        Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
+        Route::patch('/addresses/{address}/default', [AddressController::class, 'setDefault'])->name('addresses.default');
     });
 });
 

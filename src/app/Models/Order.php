@@ -15,14 +15,25 @@ class Order extends Model
         'order_code',
         'user_id',
         'total_price',
+        'shipping_fee',
         'status',
         'notes',
+        'delivery_address',
+        'delivery_lat',
+        'delivery_lng',
+        'payment_method',
+        'payment_status',
+        'rating',
+        'review',
     ];
 
     protected function casts(): array
     {
         return [
             'total_price' => 'integer',
+            'shipping_fee' => 'integer',
+            'delivery_lat' => 'decimal:8',
+            'delivery_lng' => 'decimal:8',
         ];
     }
 
@@ -51,5 +62,15 @@ class Order extends Model
     public function getFormattedTotalAttribute(): string
     {
         return 'Rp ' . number_format($this->total_price, 0, ',', '.');
+    }
+
+    public function getFormattedShippingAttribute(): string
+    {
+        return 'Rp ' . number_format($this->shipping_fee, 0, ',', '.');
+    }
+
+    public function getFormattedGrandTotalAttribute(): string
+    {
+        return 'Rp ' . number_format($this->total_price + $this->shipping_fee, 0, ',', '.');
     }
 }

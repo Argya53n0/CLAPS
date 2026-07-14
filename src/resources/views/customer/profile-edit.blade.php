@@ -1,10 +1,9 @@
-@extends('customer.layout')
+@extends('customer.account-layout')
 
 @section('title', 'Edit Profil - Claps Coffee')
 
-@section('content')
-    <div class="max-w-2xl mx-auto px-6 lg:px-12 py-12">
-        <div class="bg-white rounded-3xl border border-[#EBE1D7] p-8 shadow-sm">
+@section('account_content')
+    <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-[#EBE1D7]">
             <h1 class="text-2xl font-extrabold font-serif text-gray-900 mb-6">Edit Profil</h1>
 
             <form action="{{ route('customer.profile.update') }}" method="POST">
@@ -35,12 +34,4 @@
                 </div>
             </form>
         </div>
-        
-        <div class="mt-6 text-center">
-             <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="text-red-500 hover:text-red-700 text-[14px] font-bold transition-colors">Logout dari Akun</button>
-            </form>
-        </div>
-    </div>
 @endsection

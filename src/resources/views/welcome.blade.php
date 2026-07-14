@@ -25,15 +25,25 @@
 
             {{-- Nav Links --}}
             <ul class="hidden md:flex items-center gap-8 text-sm font-medium text-claps-text-gray">
-                <li><a href="#" class="text-claps-brown border-b-2 border-claps-brown pb-1">Home</a></li>
-                <li><a href="#" class="hover:text-claps-brown transition-colors duration-200">Menu</a></li>
-                <li><a href="#" class="hover:text-claps-brown transition-colors duration-200">Locations</a></li>
+                <li><a href="/" class="text-claps-brown border-b-2 border-claps-brown pb-1">Home</a></li>
+                <li><a href="{{ route('menu') }}" class="hover:text-claps-brown transition-colors duration-200">Menu</a></li>
+                <li><a href="/" class="hover:text-claps-brown transition-colors duration-200">Locations</a></li>
             </ul>
 
             {{-- Auth Buttons --}}
             <div class="hidden md:flex items-center gap-4">
-                <a href="/login" class="text-sm font-medium text-claps-text-dark hover:text-claps-brown transition-colors duration-200">Login</a>
-                <a href="/register" class="text-sm font-medium text-white bg-claps-brown hover:bg-claps-brown-dark px-5 py-2 rounded-full transition-colors duration-200">Register</a>
+                @auth
+                    @if(auth()->user()->role === 'owner')
+                        <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-white bg-claps-brown hover:bg-claps-brown-dark px-5 py-2 rounded-full transition-colors duration-200">Dashboard Admin</a>
+                    @elseif(auth()->user()->role === 'karyawan')
+                        <a href="{{ route('admin.orders') }}" class="text-sm font-medium text-white bg-claps-brown hover:bg-claps-brown-dark px-5 py-2 rounded-full transition-colors duration-200">Dashboard Karyawan</a>
+                    @else
+                        <a href="{{ route('customer.orders') }}" class="text-sm font-medium text-white bg-claps-brown hover:bg-claps-brown-dark px-5 py-2 rounded-full transition-colors duration-200">Pesanan Saya</a>
+                    @endif
+                @else
+                    <a href="/login" class="text-sm font-medium text-claps-text-dark hover:text-claps-brown transition-colors duration-200">Login</a>
+                    <a href="/register" class="text-sm font-medium text-white bg-claps-brown hover:bg-claps-brown-dark px-5 py-2 rounded-full transition-colors duration-200">Register</a>
+                @endauth
             </div>
 
             {{-- Mobile Hamburger --}}
@@ -47,13 +57,23 @@
         {{-- Mobile Menu --}}
         <div id="mobile-menu" class="hidden md:hidden bg-white border-t px-6 py-4">
             <ul class="flex flex-col gap-4 text-sm font-medium text-claps-text-gray">
-                <li><a href="#" class="text-claps-brown">Home</a></li>
-                <li><a href="#">Menu</a></li>
-                <li><a href="#">Locations</a></li>
+                <li><a href="/" class="text-claps-brown">Home</a></li>
+                <li><a href="{{ route('menu') }}">Menu</a></li>
+                <li><a href="/">Locations</a></li>
             </ul>
             <div class="flex flex-col gap-3 mt-8">
-                <a href="/login" class="text-sm font-medium text-claps-text-dark">Login</a>
-                <a href="/register" class="text-sm font-medium text-white bg-claps-brown px-5 py-2 rounded-full">Register</a>
+                @auth
+                    @if(auth()->user()->role === 'owner')
+                        <a href="{{ route('admin.dashboard') }}" class="text-center text-sm font-medium text-white bg-claps-brown px-5 py-3 rounded-full">Dashboard Admin</a>
+                    @elseif(auth()->user()->role === 'karyawan')
+                        <a href="{{ route('admin.orders') }}" class="text-center text-sm font-medium text-white bg-claps-brown px-5 py-3 rounded-full">Dashboard Karyawan</a>
+                    @else
+                        <a href="{{ route('customer.orders') }}" class="text-center text-sm font-medium text-white bg-claps-brown px-5 py-3 rounded-full">Pesanan Saya</a>
+                    @endif
+                @else
+                    <a href="/login" class="text-center text-sm font-medium text-claps-text-dark py-2">Login</a>
+                    <a href="/register" class="text-center text-sm font-medium text-white bg-claps-brown px-5 py-3 rounded-full">Register</a>
+                @endauth
             </div>
         </div>
     </header>
@@ -78,10 +98,10 @@
                 Dirancang khusus untuk menemani setiap momen bahagiamu.
             </p>
             <div class="flex flex-wrap gap-4 mt-8">
-                <a href="#" class="bg-claps-brown hover:bg-claps-brown-dark text-white font-semibold px-7 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl">
+                <a href="{{ route('menu') }}" class="bg-claps-brown hover:bg-claps-brown-dark text-white font-semibold px-7 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl">
                     Pesan Sekarang
                 </a>
-                <a href="#" class="bg-white/10 backdrop-blur-sm border border-white/40 text-white font-semibold px-7 py-3 rounded-full hover:bg-white/20 transition-all duration-300">
+                <a href="{{ route('menu') }}" class="bg-white/10 backdrop-blur-sm border border-white/40 text-white font-semibold px-7 py-3 rounded-full hover:bg-white/20 transition-all duration-300">
                     Lihat Menu
                 </a>
             </div>
@@ -97,7 +117,7 @@
                 <h2 class="text-3xl md:text-4xl font-bold">Promo Spesial Musim Ini</h2>
                 <p class="text-claps-text-gray mt-2">Kesegaran baru untuk hari yang cerah.</p>
             </div>
-            <a href="#" class="text-claps-brown font-semibold text-sm mt-4 md:mt-0 hover:underline flex items-center gap-1">
+            <a href="{{ route('menu') }}" class="text-claps-brown font-semibold text-sm mt-4 md:mt-0 hover:underline flex items-center gap-1">
                 Lihat Semua Promo
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </a>
@@ -120,9 +140,9 @@
                     </div>
                     <div class="flex items-center justify-between mt-4">
                         <span class="text-claps-brown font-bold text-sm">Diskon 20%</span>
-                        <button class="w-8 h-8 rounded-full border border-claps-text-gray/30 flex items-center justify-center text-claps-text-gray hover:bg-claps-brown hover:text-white hover:border-claps-brown transition-all duration-200">
+                        <a href="{{ route('menu') }}" class="w-8 h-8 rounded-full border border-claps-text-gray/30 flex items-center justify-center text-claps-text-gray hover:bg-claps-brown hover:text-white hover:border-claps-brown transition-all duration-200">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -142,9 +162,9 @@
                     </div>
                     <div class="flex items-center justify-between mt-4">
                         <span class="text-claps-brown font-bold text-sm">Mulai Rp 45.000</span>
-                        <button class="w-8 h-8 rounded-full border border-claps-text-gray/30 flex items-center justify-center text-claps-text-gray hover:bg-claps-brown hover:text-white hover:border-claps-brown transition-all duration-200">
+                        <a href="{{ route('menu') }}" class="w-8 h-8 rounded-full border border-claps-text-gray/30 flex items-center justify-center text-claps-text-gray hover:bg-claps-brown hover:text-white hover:border-claps-brown transition-all duration-200">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -173,9 +193,9 @@
                         <p class="text-claps-text-gray text-xs mt-1 leading-relaxed">Espresso, steamed milk, dan saus karamel manis.</p>
                         <div class="flex items-center justify-between mt-3">
                             <span class="font-bold text-sm text-claps-text-dark">Rp 38.000</span>
-                            <button class="w-7 h-7 rounded-full bg-claps-brown/10 flex items-center justify-center text-claps-brown hover:bg-claps-brown hover:text-white transition-all duration-200">
+                            <a href="{{ route('menu') }}" class="w-7 h-7 rounded-full bg-claps-brown/10 flex items-center justify-center text-claps-brown hover:bg-claps-brown hover:text-white transition-all duration-200">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -190,9 +210,9 @@
                         <p class="text-claps-text-gray text-xs mt-1 leading-relaxed">Renyah di luar, lembut di dalam dengan butter premium.</p>
                         <div class="flex items-center justify-between mt-3">
                             <span class="font-bold text-sm text-claps-text-dark">Rp 25.000</span>
-                            <button class="w-7 h-7 rounded-full bg-claps-brown/10 flex items-center justify-center text-claps-brown hover:bg-claps-brown hover:text-white transition-all duration-200">
+                            <a href="{{ route('menu') }}" class="w-7 h-7 rounded-full bg-claps-brown/10 flex items-center justify-center text-claps-brown hover:bg-claps-brown hover:text-white transition-all duration-200">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -207,9 +227,9 @@
                         <p class="text-claps-text-gray text-xs mt-1 leading-relaxed">Double ristretto dengan microfoam milk yang lembut.</p>
                         <div class="flex items-center justify-between mt-3">
                             <span class="font-bold text-sm text-claps-text-dark">Rp 35.000</span>
-                            <button class="w-7 h-7 rounded-full bg-claps-brown/10 flex items-center justify-center text-claps-brown hover:bg-claps-brown hover:text-white transition-all duration-200">
+                            <a href="{{ route('menu') }}" class="w-7 h-7 rounded-full bg-claps-brown/10 flex items-center justify-center text-claps-brown hover:bg-claps-brown hover:text-white transition-all duration-200">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -224,9 +244,9 @@
                         <p class="text-claps-text-gray text-xs mt-1 leading-relaxed">Manis alami pisang dengan taburan walnut renyah.</p>
                         <div class="flex items-center justify-between mt-3">
                             <span class="font-bold text-sm text-claps-text-dark">Rp 22.000</span>
-                            <button class="w-7 h-7 rounded-full bg-claps-brown/10 flex items-center justify-center text-claps-brown hover:bg-claps-brown hover:text-white transition-all duration-200">
+                            <a href="{{ route('menu') }}" class="w-7 h-7 rounded-full bg-claps-brown/10 flex items-center justify-center text-claps-brown hover:bg-claps-brown hover:text-white transition-all duration-200">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/></svg>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -243,11 +263,11 @@
                 <p class="text-claps-text-gray text-sm mt-1">&copy; 2024 Claps Coffee Roasters. Handcrafted with warmth.</p>
             </div>
             <ul class="flex flex-wrap gap-6 text-sm text-claps-text-gray">
-                <li><a href="#" class="hover:text-claps-brown transition-colors duration-200">About Us</a></li>
-                <li><a href="#" class="hover:text-claps-brown transition-colors duration-200">Sustainability</a></li>
-                <li><a href="#" class="hover:text-claps-brown transition-colors duration-200">Shipping Policy</a></li>
-                <li><a href="#" class="hover:text-claps-brown transition-colors duration-200">Contact</a></li>
-                <li><a href="#" class="hover:text-claps-brown transition-colors duration-200">Careers</a></li>
+                <li><a href="/" class="hover:text-claps-brown transition-colors duration-200">About Us</a></li>
+                <li><a href="/" class="hover:text-claps-brown transition-colors duration-200">Sustainability</a></li>
+                <li><a href="/" class="hover:text-claps-brown transition-colors duration-200">Shipping Policy</a></li>
+                <li><a href="/" class="hover:text-claps-brown transition-colors duration-200">Contact</a></li>
+                <li><a href="/" class="hover:text-claps-brown transition-colors duration-200">Careers</a></li>
             </ul>
         </div>
     </footer>
