@@ -25,14 +25,34 @@ class AdminOrderController extends Controller
         return view('admin.orders.index', compact('orders', 'currentStatus', 'openOrdersCount', 'avgPreparationTime'));
     }
 
+    public function show(Order $order)
+    {
+        $order->load(['user', 'items.product']);
+        return view('admin.orders.show', compact('order'));
+    }
+
+    public function print(Order $order)
+    {
+        $order->load(['user', 'items.product']);
+        return view('admin.orders.print', compact('order'));
+    }
+
     public function updateStatus(Request $request, Order $order)
     {
         $request->validate([
-            'status' => 'required|in:pending,preparing,delivery,completed,cancelled'
+            'status' => 'required|in:pending,preparing,delivery,completed,cancelled',
+            'cancellation_reason' => 'nullable|string|max:255'
         ]);
 
-        $order->update(['status' => $request->status]);
+        $data = ['status' => $request->status];
+        if ($request->status === 'cancelled') {
+            $data['cancellation_reason'] = $request->cancellation_reason;
+        } else {
+            $data['cancellation_reason'] = null; // Clear if un-cancelled
+        }
 
-        return back()->with('success', 'Status pesanan berhasil diperbarui!');
+        $order->update($data);
+
+        return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui!');
     }
 }
