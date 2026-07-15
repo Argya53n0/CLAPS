@@ -26,10 +26,10 @@
                         'cancelled' => 'bg-red-100 text-red-800 border-red-200',
                     ];
                     $statusLabels = [
-                        'pending' => 'Menunggu Konfirmasi',
-                        'preparing' => 'Sedang Disiapkan',
-                        'delivery' => 'Sedang Diantar',
-                        'completed' => 'Selesai',
+                        'pending' => 'Pending',
+                        'preparing' => 'Preparing',
+                        'delivery' => 'Delivery',
+                        'completed' => 'Completed',
                         'cancelled' => 'Dibatalkan',
                     ];
                 @endphp
@@ -51,10 +51,11 @@
                         <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-200 rounded-full z-0"></div>
                         <div class="absolute left-0 top-1/2 transform -translate-y-1/2 h-1 bg-[#8C4A15] rounded-full z-0 transition-all duration-500" style="width: {{ $currentIndex > 0 ? ($currentIndex / (count($steps) - 1)) * 100 : 0 }}%"></div>
                         
-                        @foreach($steps as $index => $step)
+                        @foreach($steps as $stepIdx => $step)
                             @php
-                                $isCompleted = $index <= $currentIndex;
-                                $isActive = $index === $currentIndex;
+                                $isCompleted = $stepIdx <= $currentIndex;
+                                $isActive = $stepIdx === $currentIndex;
+                                $currentStepIdx = $currentIndex;
                             @endphp
                             <div class="relative z-10 flex flex-col items-center gap-2">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center border-2 {{ $isCompleted ? 'bg-[#8C4A15] border-[#8C4A15] text-white shadow-md' : 'bg-white border-gray-300 text-gray-400' }} transition-colors">
@@ -64,9 +65,10 @@
                                         <div class="w-2.5 h-2.5 rounded-full {{ $isActive ? 'bg-[#8C4A15]' : 'bg-transparent' }}"></div>
                                     @endif
                                 </div>
-                                <span class="text-[11px] font-bold {{ $isCompleted ? 'text-[#8C4A15]' : 'text-gray-400' }} absolute top-10 whitespace-nowrap hidden sm:block">
-                                    {{ $statusLabels[$step] }}
-                                </span>
+                                <div class="text-[11px] font-bold mt-2 uppercase tracking-widest
+                                    {{ $stepIdx < $currentStepIdx ? 'text-[#8C4A15]' : ($stepIdx === $currentStepIdx ? 'text-[#8C4A15]' : 'text-gray-400') }}">
+                                    {{ $step }}
+                                </div>
                             </div>
                         @endforeach
                     </div>
@@ -268,6 +270,17 @@
                             </button>
                         </form>
                     @endif
+                </div>
+            @elseif($order->status === 'cancelled')
+                <div class="p-6 md:p-8">
+                    <div class="bg-red-50 rounded-2xl p-6 border border-red-100 text-center">
+                        <svg class="w-12 h-12 text-red-500 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                        <h3 class="font-bold text-red-900 text-lg mb-1">Pesanan Dibatalkan</h3>
+                        @if($order->cancellation_reason)
+                            <p class="text-[14px] text-red-700 mt-2">Alasan: <span class="font-bold">{{ $order->cancellation_reason }}</span></p>
+                        @endif
+                        <p class="text-[13px] text-red-600 mt-2">Mohon maaf atas ketidaknyamanan ini. Silakan hubungi admin untuk info lebih lanjut.</p>
+                    </div>
                 </div>
             @endif
         </div>

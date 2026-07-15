@@ -16,9 +16,9 @@
             @php
                 $statuses = [
                     'all' => 'All',
-                    'pending' => 'Incoming',
+                    'pending' => 'Pending',
                     'preparing' => 'Preparing',
-                    'delivery' => 'Ready for Pickup',
+                    'delivery' => 'Delivery',
                     'completed' => 'Completed'
                 ];
             @endphp
@@ -133,17 +133,33 @@
                             
                             {{-- Status Select --}}
                             <td class="py-5 px-4">
+                                @php
+                                    $selectColors = [
+                                        'pending' => 'bg-yellow-50 text-yellow-700',
+                                        'preparing' => 'bg-blue-50 text-blue-700',
+                                        'delivery' => 'bg-green-50 text-green-700',
+                                        'completed' => 'bg-emerald-50 text-emerald-700',
+                                        'cancelled' => 'bg-red-50 text-red-700',
+                                    ];
+                                    $arrowColors = [
+                                        'pending' => 'text-yellow-500',
+                                        'preparing' => 'text-blue-500',
+                                        'delivery' => 'text-green-500',
+                                        'completed' => 'text-emerald-500',
+                                        'cancelled' => 'text-red-500',
+                                    ];
+                                @endphp
                                 <form action="{{ route('admin.orders.status', $order) }}" method="POST" class="relative group/form">
                                     @csrf
                                     @method('PATCH')
-                                    <select name="status" onchange="this.form.submit()" class="appearance-none w-full bg-[#FCF8F2] border-none text-[#8C4A15] text-[11px] font-bold rounded-full px-3 py-1.5 pr-8 focus:ring-0 cursor-pointer">
-                                        <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Incoming</option>
+                                    <select name="status" onchange="this.form.submit()" class="appearance-none w-full {{ $selectColors[$order->status] ?? 'bg-gray-50 text-gray-700' }} border-none text-[11px] font-bold rounded-full px-3 py-1.5 pr-8 focus:ring-0 cursor-pointer">
+                                        <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Pending</option>
                                         <option value="preparing" {{ $order->status === 'preparing' ? 'selected' : '' }}>Preparing</option>
-                                        <option value="delivery" {{ $order->status === 'delivery' ? 'selected' : '' }}>Ready for Pickup</option>
+                                        <option value="delivery" {{ $order->status === 'delivery' ? 'selected' : '' }}>Delivery</option>
                                         <option value="completed" {{ $order->status === 'completed' ? 'selected' : '' }}>Completed</option>
                                         <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                                     </select>
-                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#8C4A15]">
+                                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 {{ $arrowColors[$order->status] ?? 'text-gray-500' }}">
                                         <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
                                     </div>
                                 </form>
@@ -151,9 +167,9 @@
                             
                             {{-- Actions --}}
                             <td class="py-5 pl-4 pr-6 text-right">
-                                <button class="px-4 py-2 bg-[#EBE1D7]/40 hover:bg-[#EBE1D7] text-[#8C4A15] rounded-lg text-[12px] font-bold transition-colors">
+                                <a href="{{ route('admin.orders.show', $order) }}" class="px-4 py-2 bg-[#EBE1D7]/40 hover:bg-[#EBE1D7] text-[#8C4A15] rounded-lg text-[12px] font-bold transition-colors inline-block">
                                     View<br>Details
-                                </button>
+                                </a>
                             </td>
                         </tr>
                     @empty

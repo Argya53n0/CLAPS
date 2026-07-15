@@ -95,4 +95,13 @@ class AdminMenuController extends Controller
         $product->delete();
         return redirect()->route('admin.menu')->with('success', 'Menu berhasil dihapus!');
     }
+
+    public function toggleAvailability(Product $product)
+    {
+        $product->update([
+            'is_available' => !$product->is_available
+        ]);
+
+        return redirect()->back()->with('success', 'Status ketersediaan ' . $product->name . ' berhasil diubah.');
+    }
 }

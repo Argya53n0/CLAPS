@@ -25,11 +25,11 @@
                                     'cancelled' => 'bg-red-100 text-red-800 border-red-200',
                                 ];
                                 $statusLabels = [
-                                    'pending' => 'Menunggu Konfirmasi',
-                                    'preparing' => 'Sedang Disiapkan',
-                                    'delivery' => 'Siap Diambil / Diantar',
-                                    'completed' => 'Selesai',
-                                    'cancelled' => 'Dibatalkan',
+                                    'pending' => 'Pending',
+                                    'preparing' => 'Preparing',
+                                    'delivery' => 'Delivery',
+                                    'completed' => 'Completed',
+                                    'cancelled' => 'Cancelled',
                                 ];
                             @endphp
                             

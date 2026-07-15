@@ -80,12 +80,15 @@ Route::middleware(['auth', 'role:owner'])->group(function () {
 // Karyawan Only
 Route::middleware(['auth', 'role:karyawan'])->group(function () {
     Route::get('/admin/karyawan-dashboard', [KaryawanDashboardController::class, 'index'])->name('admin.karyawan.dashboard');
+    Route::get('/admin/karyawan-dashboard/check-new', [KaryawanDashboardController::class, 'checkNewOrder'])->name('admin.karyawan.check_new');
 });
 
 // Shared (Owner & Karyawan)
 Route::middleware(['auth', 'role:owner,karyawan'])->group(function () {
     // Orders Management
     Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+    Route::get('/admin/orders/{order}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+    Route::get('/admin/orders/{order}/print', [AdminOrderController::class, 'print'])->name('admin.orders.print');
     Route::patch('/admin/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.status');
 
     // Menu Management
@@ -94,5 +97,6 @@ Route::middleware(['auth', 'role:owner,karyawan'])->group(function () {
     Route::post('/admin/menu', [AdminMenuController::class, 'store'])->name('admin.menu.store');
     Route::get('/admin/menu/{product}/edit', [AdminMenuController::class, 'edit'])->name('admin.menu.edit');
     Route::put('/admin/menu/{product}', [AdminMenuController::class, 'update'])->name('admin.menu.update');
+    Route::patch('/admin/menu/{product}/toggle', [AdminMenuController::class, 'toggleAvailability'])->name('admin.menu.toggle');
     Route::delete('/admin/menu/{product}', [AdminMenuController::class, 'destroy'])->name('admin.menu.destroy');
 });

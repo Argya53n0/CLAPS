@@ -17,6 +17,7 @@ class Order extends Model
         'total_price',
         'shipping_fee',
         'status',
+        'cancellation_reason',
         'notes',
         'delivery_address',
         'delivery_lat',

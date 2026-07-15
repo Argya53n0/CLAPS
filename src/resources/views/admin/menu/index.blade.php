@@ -157,15 +157,19 @@
                                 {{ $product->formatted_price }}
                             </td>
                             <td class="py-4 px-6">
-                                <div class="flex items-center gap-2">
-                                    @if($product->is_available)
-                                        <div class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></div>
-                                        <span class="text-[13px] font-bold text-gray-700">In Stock</span>
-                                    @else
-                                        <div class="w-1.5 h-1.5 rounded-full bg-[#EF4444]"></div>
-                                        <span class="text-[13px] font-bold text-gray-700">Out of Stock</span>
-                                    @endif
-                                </div>
+                                <form action="{{ route('admin.menu.toggle', $product) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button type="submit" class="flex items-center gap-2 group/toggle">
+                                        @if($product->is_available)
+                                            <div class="w-1.5 h-1.5 rounded-full bg-[#10B981] group-hover/toggle:scale-125 transition-transform"></div>
+                                            <span class="text-[13px] font-bold text-gray-700 group-hover/toggle:text-[#10B981] transition-colors">In Stock</span>
+                                        @else
+                                            <div class="w-1.5 h-1.5 rounded-full bg-[#EF4444] group-hover/toggle:scale-125 transition-transform"></div>
+                                            <span class="text-[13px] font-bold text-gray-700 group-hover/toggle:text-[#EF4444] transition-colors">Sold Out</span>
+                                        @endif
+                                    </button>
+                                </form>
                             </td>
                             <td class="py-4 pl-6 text-right">
                                 <div class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
